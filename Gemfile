@@ -8,6 +8,8 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.6'
+# internationalization
+gem 'rails-i18n'
 # hash password
 gem 'bcrypt'
 # make sample users
