@@ -16,6 +16,15 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence:true, length: { minimum: 6 }, allow_nil: true
   
+  #Scopeで検索用のメソッドを定義する
+  scope :search, -> (search_params) do
+    return if search_params.blank?
+    #パラメータを指定して検索を実行する
+    name_like(search_params[:name])
+  end
+  # nameが存在する場合、nameをlike検索する
+  scope :name_like, -> (name) { where('name LIKE ?', "%#{name}%") if name.present? }
+  
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
     cost = 
