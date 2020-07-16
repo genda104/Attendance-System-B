@@ -33,7 +33,12 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do       # トランザクションを開始します。
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
-        attendance.update_attributes!(item)
+        if (item[:started_at] != "") && (item[:finished_at] == "")            #出社時間のみの更新はできない
+          flash[:danger] = "退勤時間が必要です。更新をキャンセルしました。"
+          redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+        else
+          attendance.update_attributes!(item)
+        end
       end
     end
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
@@ -42,7 +47,7 @@ class AttendancesController < ApplicationController
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
-  
+
   private
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
