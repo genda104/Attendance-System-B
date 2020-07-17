@@ -34,8 +34,10 @@ class AttendancesController < ApplicationController
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
         if (item[:started_at] != "") && (item[:finished_at] == "")            #出社時間のみの更新はできない
+          raise ActiveRecord::RecordInvalid         #例外を発生させて更新を無効にする。
           flash[:danger] = "退勤時間が必要です。更新をキャンセルしました。"
-          redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+          redirect_to attendances_edit_one_month_user_url(date: params[:date])
+          return
         else
           attendance.update_attributes!(item)
         end
@@ -43,7 +45,7 @@ class AttendancesController < ApplicationController
     end
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
     redirect_to user_url(date: params[:date])
-  rescue ActiveRecord::RecordInvalid        # トランザクションによるエラーの分岐です。
+  rescue ActiveRecord::RecordInvalid        # トランザクションによる例外発生で更新を無効にする。
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
