@@ -6,12 +6,8 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
   
   def index
-    @search_params = user_search_params
-#    if @serch_params == ""
-      @users = User.paginate(page: params[:page])
-#    else
-#      @users = User.search(@search_params)
-#    end
+    @users = User.paginate(page: params[:page]).search(params[:search])
+    (params[:search] == nil || params[:search] == "") ? @title = "全てのユーザー" : @title = "検索結果"
   end
   
   def show
@@ -64,10 +60,6 @@ class UsersController < ApplicationController
 
   private
   
-    def user_search_params
-      params.fetch(:search, {}).permit(:name)
-    end
-
     def user_params
       params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
     end

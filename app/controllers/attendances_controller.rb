@@ -35,9 +35,6 @@ class AttendancesController < ApplicationController
         attendance = Attendance.find(id)
         if (item[:started_at] != "") && (item[:finished_at] == "")            #出社時間のみの更新はできない
           raise ActiveRecord::RecordInvalid         #例外を発生させて更新を無効にする。
-          flash[:danger] = "退勤時間が必要です。更新をキャンセルしました。"
-          redirect_to attendances_edit_one_month_user_url(date: params[:date])
-          return
         else
           attendance.update_attributes!(item)
         end

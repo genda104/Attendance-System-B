@@ -1,12 +1,12 @@
 <% provide(:title, 'All Users') %>
-<h1>全てのユーザー</h1>
+<h1><%= @title %></h1>
 
 <div class="pull-right">
   <div class="search-form">
-    <%= form_with(scope: :search, url: users_path, method: :get, local: true) do |f| %>
-      <%= f.label(:name, "ユーザー名検索") %>
+    <%= form_with(url: users_path, method: :get, local: true) do |f| %>
+      <%= f.label(:search, "ユーザー名検索") %>
       <br/>
-      <%= f.text_field :name, value: @search_params[:name] %>
+      <%= f.text_field :search, value: params[:search] %>
       <%= f.submit :search, value: "検索", class: "btn btn-primary" %>
     <% end %>
   </div>

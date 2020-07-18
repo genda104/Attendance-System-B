@@ -15,15 +15,15 @@ class User < ApplicationRecord
   validates :work_time, presence: true
   has_secure_password
   validates :password, presence:true, length: { minimum: 6 }, allow_nil: true
-  
-  #Scopeで検索用のメソッドを定義する
-  scope :search, -> (search_params) do
-    return if search_params.blank?
-    #パラメータを指定して検索を実行する
-    name_like(search_params[:name])
+
+  # ユーザー検索機能
+  def self.search(search)   #ここでのself.はUser.を意味する
+    if search
+      where(['name LIKE ?', "%#{search}%"])   #検索とnameの部分一致を表示。User.は省略
+    else
+      all   #全て表示。User.は省略
+    end
   end
-  # nameが存在する場合、nameをlike検索する
-  scope :name_like, -> (name) { where('name LIKE ?', "%#{name}%") if name.present? }
   
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
